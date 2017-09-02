@@ -51,7 +51,7 @@ router.get('/:short',function(req,res,next){
       var params=req.params.short;
 
       var findLink=function(db,callback){
-        db.collection("links").findOne({shortUrl:params},{url:1,_id:0},function(err,doc){
+        db.collection("links").findOne({short:params},{url:1,_id:0},function(err,doc){
           if(doc!=null)
             res.redirect(doc.url);
           else
