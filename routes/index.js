@@ -50,7 +50,14 @@ router.get('/:short',function(req,res,next){
       console.log("Connected to server");
       var params=req.params.short;
 
-      var findLink=function(db,callback){};
+      var findLink=function(db,callback){
+        db.collection("links").findOne({shortUrl:params},{url:1,_id:0},function(err,doc){
+          if(doc!=null)
+            res.redirect(doc.url);
+          else
+            res.json({error:"No short URL found for your entered address.Please add your address in the database with /new route."});
+        });
+      };
       findLink(db,function(){
         db.close();
       });
