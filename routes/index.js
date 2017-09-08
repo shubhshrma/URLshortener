@@ -10,7 +10,8 @@ var conn="mongodb://localhost:27017/urlshortener";
 /* GET home page. */
 router.get('/new/:url(*)', function(req, res, next) {
 	
-  
+  //variable to dynamically get host name for delpoyment purpose 
+  var local = req.get('host') + "/";
   mongodb.MongoClient.connect(conn,function(err,db){
   	
   	if (err) {
@@ -25,7 +26,7 @@ router.get('/new/:url(*)', function(req, res, next) {
         //if new address already in database
         if(doc!=null){
 
-            res.json({ originalUrl:params , shortUrl:"localhost:3000/"+doc.short});
+            res.json({ originalUrl:params , shortUrl:local+doc.short});
         }
         //new address not present in database 
         else{
@@ -37,7 +38,7 @@ router.get('/new/:url(*)', function(req, res, next) {
         var obj={url:params , short:shortCode};
         
         db.collection('links').insert([obj]);
-        res.json({ originalUrl:params , shortUrl:"localhost:3000/"+shortCode});
+        res.json({ originalUrl:params , shortUrl:local+shortCode});
         //closing connection not sure
         db.close();
       }
