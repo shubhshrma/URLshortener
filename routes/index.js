@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var mongodb = require('mongodb');
 var shortid = require('shortid');
+//replace _ and – with $ and @
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
+
 var validUrl = require('valid-url');
 
 
@@ -39,7 +42,7 @@ router.get('/new/:url(*)', function(req, res, next) {
         
         db.collection('links').insert([obj]);
         res.json({ originalUrl:params , shortUrl:local+shortCode});
-        //closing connection not sure
+        //closing connection not sure whether correct time or not
         db.close();
       }
 
