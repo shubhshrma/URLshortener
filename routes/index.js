@@ -11,15 +11,20 @@ var validUrl = require('valid-url');
 var conn="mongodb://localhost:27017/urlshortener";
 
 /* GET home page. */
+router.get('/', function(req, res, next) {
+		res.render('index');
+});
+
+
 router.get('/new/:url(*)', function(req, res, next) {
-	
-  //variable to dynamically get host name for delpoyment purpose 
+
+  //variable to dynamically get host name for delpoyment purpose
   var local = req.get('host') + "/";
   mongodb.MongoClient.connect(conn,function(err,db){
-  	
+
   	if (err) {
     	console.log("Unable to connect to server", err);
-    } 
+    }
     else {
     	console.log("Connected to server");
 
@@ -31,15 +36,15 @@ router.get('/new/:url(*)', function(req, res, next) {
 
             res.json({ originalUrl:params , shortUrl:local+doc.short});
         }
-        //new address not present in database 
+        //new address not present in database
         else{
-          
+
         if(validUrl.isUri(params)){
         var shortCode=shortid.generate();
-        
-        
+
+
         var obj={url:params , short:shortCode};
-        
+
         db.collection('links').insert([obj]);
         res.json({ originalUrl:params , shortUrl:local+shortCode});
         //closing connection not sure whether correct time or not
@@ -49,14 +54,14 @@ router.get('/new/:url(*)', function(req, res, next) {
       else{
         res.json({error:"Error, make sure you enter a valid URL with a valid protocol."});
       }
-        
+
         }
 
       });
-    	
-      
+
+
     };
-    
+
 
   });
 });
@@ -74,7 +79,9 @@ router.get('/:short',function(req,res,next){
       var findLink=function(db,callback){
         db.collection("links").findOne({short:params},{url:1,_id:0},function(err,doc){
           if(err)
-
+					{
+						console.log("Unable to connect to database", err);
+					}
           if(doc!=null)
             res.redirect(doc.url);
           else
